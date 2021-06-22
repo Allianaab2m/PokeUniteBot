@@ -5,4 +5,4 @@ Working in Progress...
 
 - Ban & Pick System
 - Logging match point
-すりーふぃあです。共同開発するらしいです。
+- すりーふぃあです。共同開発するらしいです。
