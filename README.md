@@ -3,6 +3,10 @@ Working in Progress...
 
 ## ToDo
 
-- Ban & Pick System
-- Logging match point
+- カスタムマッチなどで利用できるBan&Pickシステム
+- マッチポイントの保存(要コマンド操作)
+
+## 備考
+- まだ一切何も出来てません…
+    -頑張ります
 - すりーふぃあです。共同開発するらしいです。
