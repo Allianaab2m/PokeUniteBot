@@ -1,2 +1,3 @@
-import discord
+import config
 print("Hello World!")
+print(config.TOKEN)
