@@ -6,12 +6,12 @@ TOKEN = config.TOKEN
 client = discord.Client()
 
 @client.event
-async def on_ready()m:
+async def on_ready():
     print('Login.')
 
 @client.event
 async def on_message(message):
-    if message.author.bot!:
+    if message.author.bot:
         return
     if message.content == '/ping':
         await message.channel.send('Pong!')
