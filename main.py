@@ -1,7 +1,8 @@
+from discord.ext.commands.core import bot_has_any_role
 import config
 import discord
 from discord.ext import commands
-
+import pokelist
 import traceback
 TOKEN = config.TOKEN
 
@@ -23,6 +24,6 @@ class PUBot(commands.Bot):
         print(self.user.name)
         print(self.user.id)
 
-if __name__ == '__init__':
+if __name__ == '__main__':
     bot = PUBot(command_prefix='pu.')
     bot.run(TOKEN)
