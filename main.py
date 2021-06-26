@@ -1,19 +1,28 @@
 import config
 import discord
+from discord.ext import commands
 
+import traceback
 TOKEN = config.TOKEN
 
-client = discord.Client()
+INITIAL_EXTENSIONS = [
+        'cogs'
+        ]
 
-@client.event
-async def on_ready():
-    print('Login.')
+class PUBot(commands.Bot):
+    def __init__(self, command_prefix):
+        super().__init__(command_prefix)
 
-@client.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    if message.content == '/ping':
-        await message.channel.send('Pong!')
+        for cog in INITIAL_EXTENSIONS:
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
 
-client.run(TOKEN)
+    async def on_ready(self):
+        print(self.user.name)
+        print(self.user.id)
+
+if __name__ == '__init__':
+    bot = PUBot(command_prefix='pu.')
+    bot.run(TOKEN)
