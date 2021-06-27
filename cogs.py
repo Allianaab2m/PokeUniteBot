@@ -1,4 +1,6 @@
-import discord
+from discord import message
+from discord import client
+from discord.ext.commands.cog import Cog
 import pokelist
 import config
 from discord.ext import commands
@@ -6,6 +8,8 @@ from discord.ext import commands
 PPL_roleID = config.PURPLE_ROLE_ID
 ORN_roleID = config.ORANGE_ROLE_ID
 game_active = False
+PPL_react = '🟣'
+ORN_react = '🟠'
 
 class cogs(commands.Cog):
     def __init__(self, bot):
@@ -22,28 +26,33 @@ class cogs(commands.Cog):
             else:
                 await ctx.send("Invalid Value")
 
-    # @commands.group()
-    # async def game(self, ctx):
-    #    if ctx.invoked_subcommand is None:
-    #        await ctx.send("サブコマンドが要るで。pu.game startでゲーム開始するで。")
+    @commands.group()
+    async def game(self, ctx):
+       if ctx.invoked_subcommand is None:
+           await ctx.send("サブコマンドが要るで。pu.game startでゲーム開始するで。")
+           await ctx.send(game_active)
 
-    # @game.command()
-    # async def start(self, ctx):
-    #     start_msg = await ctx.send("Start Game.")
-    #     start_msg_id = start_msg.id
-    #     game_active = True
-    #     return start_msg_id
+    @game.command()
+    async def start(self, ctx):
+        start_msg = await ctx.send("始まるで～")
+        await start_msg.add_reaction(PPL_react)
+        await start_msg.add_reaction(ORN_react)
+        game_active = True
+        await ctx.send(game_active)
+        return game_active
 
-    # @game.command()
-    # async def join(self, ctx, start_msg_id):
-    #     if game_active == False:
-    #         await ctx.send("まだゲームが開始されてへんみたいやで。先にpu.game startしてや。")
-    #     elif game_active == True:
-    #         async def on_raw_reaction_add(self, payload):
-    #             if payload.member.bot:
-    #                 return
-            
-
-
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        if payload.member.bot:
+            return
+        
+        if payload.emoji.name == PPL_react:
+            await payload.member.add_roles(payload.member.guild.get_role(PPL_roleID))
+        
+        elif payload.emoji.name == ORN_react:
+            await payload.member.add_roles(payload.member.guild.get_role(ORN_roleID))
+                    
 def setup(bot):
-    bot.add_cog(cogs(bot))
+    # bot.add_cog(cogs(bot))
+    print("Cog Loaded!")
+    bot.load_extension('cogs')
