@@ -1,38 +1,40 @@
-from discord import client, guild, member
-from discord.ext.commands.core import bot_has_any_role, command
-from discord.flags import Intents
-import config
 import discord
-from discord.ext import commands
-import pokelist
-import traceback
+import config
 
 TOKEN = config.TOKEN
 
-client = discord.Client()
-discord_intents = discord.Intents.all()
-bot = commands.Bot(
-    command_prefix="pu.",
-    intents = discord_intents
-)
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
+game_status = False
+PPL_react = '🟣'
+ORN_react = '🟠'
 
-INITIAL_EXTENSIONS = [
-        'cogs'
-        ]
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
 
-class PUBot(commands.Bot):
-    def __init__(self, command_prefix, intents):
-        super().__init__(command_prefix, intents)
+@client.event
+async def on_message(message):
 
-        for cog in INITIAL_EXTENSIONS:
-            try:
-                self.load_extension(cog)
-            except Exception:
-                traceback.print_exc()
+    if message.author == client.user:
+        return
 
-        async def on_ready(self):
-            print(self.user.name)
-            print(self.user.id)
+    if message.content.startswith('pu.start'):
+        game_status = True
+        msg = await message.channel.send('Start the custom game.')
+        await msg.add_reaction(PPL_react)
+        await msg.add_reaction(ORN_react)
 
-if __name__ == '__main__':
-    bot.run(TOKEN)
+@client.event
+async def on_reaction_add(reaction ,user):
+
+    if reaction.emoji == config.PPL_react:
+        PPLRole = discord.utils.get(user.server.roles, name="Purple Team")
+        await client.add.roles(user, PPLRole)
+
+    if reaction.emoji == config.ORN_react:
+        ORNRole = discord.utils.get(user.server.roles, name="Orange Team")
+        await client.add.roles(user, ORNRole)
+
+
+client.run(TOKEN)
