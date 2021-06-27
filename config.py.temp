@@ -1,5 +1,3 @@
 TOKEN = "TOKEN HERE" # str
 PURPLE_ROLE_ID = PURPLE ROLEID HERE # int
 ORANGE_ROLE_ID = ORANGE ROLEDID HERE # int
-PPL_react = '🟣' #Dont touch
-ORN_react = '🟠'

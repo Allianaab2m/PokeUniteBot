@@ -26,15 +26,10 @@ async def on_message(message):
         await msg.add_reaction(ORN_react)
 
 @client.event
-async def on_reaction_add(reaction ,user):
+async def on_raw_reaction_add(payload):
+    if payload.member.bot:
+        return
 
-    if reaction.emoji == config.PPL_react:
-        PPLRole = discord.utils.get(user.server.roles, name="Purple Team")
-        await client.add.roles(user, PPLRole)
-
-    if reaction.emoji == config.ORN_react:
-        ORNRole = discord.utils.get(user.server.roles, name="Orange Team")
-        await client.add.roles(user, ORNRole)
-
+    role_id = config.ROLE_DICT[payload.emoji.name]
 
 client.run(TOKEN)
