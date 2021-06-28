@@ -1,29 +1,62 @@
-from discord.ext.commands.core import bot_has_any_role
-import config
 import discord
-from discord.ext import commands
+import config
 import pokelist
-import traceback
+
 TOKEN = config.TOKEN
 
-INITIAL_EXTENSIONS = [
-        'cogs'
-        ]
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
+# game_status = False
 
-class PUBot(commands.Bot):
-    def __init__(self, command_prefix):
-        super().__init__(command_prefix)
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
 
-        for cog in INITIAL_EXTENSIONS:
-            try:
-                self.load_extension(cog)
-            except Exception:
-                traceback.print_exc()
+@client.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is None and after.channel is not None:
+        if after.channel.id == config.PURPLE_VC_ID:
+            role = member.guild.get_role(config.PURPLE_ROLE_ID)
+            await member.add_roles(role)
+        if after.channel.id == config.ORANGE_VC_ID:
+            role = member.guild.get_role(config.ORANGE_ROLE_ID)
+            await member.add_roles(role)
 
-    async def on_ready(self):
-        print(self.user.name)
-        print(self.user.id)
+    elif before.channel is not None and after.channel is None:
+        if before.channel.id == config.PURPLE_VC_ID:
+            role = member.guild.get_role(config.PURPLE_ROLE_ID)
+            await member.remove_roles(role)
+        if before.channel.id == config.ORANGE_VC_ID:
+            role = member.guild.get_role(config.ORANGE_ROLE_ID)
+            await member.remove_roles(role)
 
-if __name__ == '__main__':
-    bot = PUBot(command_prefix='pu.')
-    bot.run(TOKEN)
+@client.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    
+    channel_ppl = client.get_channel(config.PURPLE_CHANNEL_ID)
+    channel_orn = client.get_channel(config.ORANGE_CHANNEL_ID)
+
+    if message.channel.id == config.PURPLE_CHANNEL_ID:
+        if message.content in pokelist.pokelist:
+            # channel = config.PURPLE_CHANNEL_ID
+            ppl_ban = message.content
+            await channel_ppl.send("あなたのチームのBanポケモン:" + ppl_ban)
+        else:
+            await channel_ppl.send("Invalid value")
+
+    if message.channel.id == config.ORANGE_CHANNEL_ID:
+        if message.content in pokelist.pokelist:
+            await channel_orn.send(message.content)
+        else:
+            await channel_orn.send("Invalid value")
+
+    else:
+        print("Event Handled")
+        print(type(message.content))
+        print(message.content)
+        print(message.channel.id)
+        print(channel_ppl, channel_orn)
+
+client.run(TOKEN)
