@@ -14,7 +14,6 @@ ban_embed = discord.Embed(
                     )
 ban_embed.add_field(name="Purple Team",value="Not Selcted")
 ban_embed.add_field(name="Orange Team",value="Not Selcted")
-ppl_ban = ""
 
 @client.event
 async def on_ready():
